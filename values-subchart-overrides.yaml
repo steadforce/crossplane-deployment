@@ -1,0 +1,8 @@
+global:
+  hub: harbor.k8s01.steadforce.com/docker.io/istio
+  proxy: 
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+  variant: distroless
