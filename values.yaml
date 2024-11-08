@@ -1,0 +1,5 @@
+providers:
+  awsS3:
+    registry: xpkg.upbound.io
+    repository: upbound/provider-aws-s3
+    tag: v1.17.0

@@ -6,13 +6,7 @@ The following command renders the charts like argo-cd does for local deployment:
 
 ```
  helm template --release-name crossplane -n crossplane-system --include-crds --skip-tests \
-  -a autoscaling.k8s.io/v1 \
-  -a cert-manager.io/v1 \
-  -a forecastle.stakater.com/v1alpha1 \
-  -a keycloak.org/v1alpha1 \
-  -a monitoring.coreos.com/v1 \
-  -a networking.istio.io/v1beta1 \
-  -a security.istio.io/v1beta1 \
+  -a pkg.crossplane.io/v1 \
   -f values-subchart-overrides.yaml \
   -f values-local.yaml \
   --output-dir _local/local . 
