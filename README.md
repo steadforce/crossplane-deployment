@@ -1,7 +1,7 @@
 # crossplane-deployment
 deploy crossplane with argo-cd
-## Render helm charts
 
+## Render helm charts
 The following command renders the charts like argo-cd does for local deployment:
 
 ```
