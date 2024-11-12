@@ -5,7 +5,7 @@ metadata:
   name: aws-s3
 spec:
   assumeRoleChain:
-  - roleARN: "arn:aws:iam::737742117295:role/assume_s3_access"
+  - roleARN: {{ .Values.aws.s3.roleARN }}
   credentials:
     secretRef:
       key: creds

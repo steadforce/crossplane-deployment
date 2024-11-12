@@ -1,3 +1,6 @@
+aws:
+  s3:
+    roleARN: arn:aws:iam::737742117295:role/assume_s3_access
 providers:
   awsS3:
     registry: xpkg.upbound.io
