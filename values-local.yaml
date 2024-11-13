@@ -10,3 +10,12 @@ crossplane:
   resourcesRBACManager:
     limits: *localLimits
     requests: *localRequests
+providers:
+  awsS3:
+    resources:
+      limits: *localLimits
+      requests: *localRequests
+  default:
+    resources:
+      limits: *localLimits
+      requests: *localRequests
