@@ -1,0 +1,60 @@
+suite: test if the resource settings for aws-s3-provider container in cluster is correct
+capabilities:
+  apiVersions:
+  - pkg.crossplane.io/v1beta1
+templates:
+- templates/aws-s3-provider-runtime-config.yaml
+release:
+  name: crossplane
+tests:
+- it: aws-s3-provider container resources for local cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
+      # on local cluster we expect 0 or 0m cpu limits
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.cpu
+      # on local cluster we expect 0 or 0m cpu requests
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.memory
+      # on local cluster we expect 0 or 0Mi 0Gi memory requests
+      pattern: "^0.*"
+  - matchSnapshot: {}
+
+- it: aws-s3-provider container resources for dev-cloud01 cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts: &awsS3ProviderResourcesAsserts
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
+      # on local cluster we expect non 0 cpu limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.cpu
+      # on local cluster we expect non 0 cpu requests
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.memory
+      # on local cluster we expect non 0 memory requests
+      pattern: "^[1-9].*"
+  - matchSnapshot: {}
+
+- it: aws-s3-provider container resources for prod-cloud01 cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts: *awsS3ProviderResourcesAsserts
