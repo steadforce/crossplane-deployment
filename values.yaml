@@ -14,3 +14,11 @@ providers:
       requests:
         cpu: 50m
         memory: 128Mi
+  default:
+    resources:
+      limits:
+        cpu: 250m
+        memory: 320Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
