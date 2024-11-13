@@ -31,6 +31,7 @@ The following command renders the charts like argo-cd does for local deployment:
   -a aws.upbound.io/v1beta1 \
   -a bitnami.com/v1alpha1/SealedSecret \
   -a pkg.crossplane.io/v1 \
+  -a pkg.crossplane.io/v1beta1 \
   -f values-subchart-overrides.yaml \
   -f values-local.yaml \
   --output-dir _local/local . 

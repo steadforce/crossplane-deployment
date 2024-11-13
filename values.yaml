@@ -3,6 +3,14 @@ aws:
     roleARN: arn:aws:iam::737742117295:role/assume_s3_access
 providers:
   awsS3:
-    registry: xpkg.upbound.io
-    repository: upbound/provider-aws-s3
-    tag: v1.17.0
+    image:
+      registry: xpkg.upbound.io
+      repository: upbound/provider-aws-s3
+      tag: v1.17.0
+    resources:
+      limits:
+        cpu: 250m
+        memory: 320Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi

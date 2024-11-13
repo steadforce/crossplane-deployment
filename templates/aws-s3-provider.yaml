@@ -4,5 +4,7 @@ kind: Provider
 metadata:
   name: provider-aws-s3
 spec:
-  package: {{ .Values.providers.awsS3.registry }}/{{ .Values.providers.awsS3.repository }}:{{ .Values.providers.awsS3.tag }}
+  package: {{ .Values.providers.awsS3.image.registry }}/{{ .Values.providers.awsS3.image.repository }}:{{ .Values.providers.awsS3.image.tag }}
+  runtimeConfigRef:
+    name: aws-s3-provider
 {{ end }}
