@@ -1,0 +1,36 @@
+suite: test if values for aws s3 provider config are correct
+capabilities:
+  apiVersions:
+  - aws.upbound.io/v1beta1
+templates:
+- templates/aws-s3-provider-config.yaml
+release:
+  name: crossplane
+tests:
+- it: aws s3 provider config roleARN for local cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - contains: &devRoleARN
+      path: spec.assumeRoleChain
+      content:
+        roleARN: arn:aws:iam::737742117295:role/assume_s3_access
+  - matchSnapshot: {}
+- it: aws s3 provider config roleARN for development cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts:
+  - contains: *devRoleARN
+  - matchSnapshot: {}
+- it: aws s3 provider config roleARN for production cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts:
+  - contains:
+      path: spec.assumeRoleChain
+      content:
+        roleARN: arn:aws:iam::065204381364:role/assume_s3_access
+  - matchSnapshot: {}

@@ -1,2 +1,4 @@
 /_local/
 /.project
+tests/__snapshot__/
+/test-output.xml

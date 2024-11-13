@@ -28,6 +28,8 @@ The following command renders the charts like argo-cd does for local deployment:
 
 ```
  helm template --release-name crossplane -n crossplane-system --include-crds --skip-tests \
+  -a aws.upbound.io/v1beta1 \
+  -a bitnami.com/v1alpha1/SealedSecret \
   -a pkg.crossplane.io/v1 \
   -f values-subchart-overrides.yaml \
   -f values-local.yaml \

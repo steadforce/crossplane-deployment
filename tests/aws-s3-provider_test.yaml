@@ -1,0 +1,32 @@
+suite: test if values for aws s3 provider are correct
+capabilities:
+  apiVersions:
+  - pkg.crossplane.io/v1
+templates:
+- templates/aws-s3-provider.yaml
+release:
+  name: crossplane
+tests:
+- it: aws-s3-provider container image for local cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - matchRegex: &packageRegex
+      path: spec.package
+      pattern: "^xpkg.upbound.io/upbound/provider-aws-s3:"
+  - matchSnapshot: {}
+- it: aws-s3-provider container image for development cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts:
+  - matchRegex: *packageRegex
+  - matchSnapshot: {}
+- it: aws-s3-provider container image for production cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts:
+  - matchRegex: *packageRegex
+  - matchSnapshot: {}
