@@ -1,6 +1,10 @@
 aws:
   s3:
     roleARN: arn:aws:iam::737742117295:role/assume_s3_access
+crossplane:
+  resourcesCrossplane:
+    requests:
+      memory: 320Mi
 providers:
   awsS3:
     image:
@@ -13,7 +17,7 @@ providers:
         memory: 320Mi
       requests:
         cpu: 50m
-        memory: 128Mi
+        memory: 160Mi
   default:
     resources:
       limits:
