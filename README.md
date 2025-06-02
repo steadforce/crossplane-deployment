@@ -48,3 +48,14 @@ helm feature `.Capabilities.APIVersions.Has` to determine if a `CR` is installab
 helm templating is designed to work offline we have to list the supported `CR`. Using `.Capabilities.APIVersions.Has`
 feature in templating prevents sync errors in argo-cd if a `CR` can't be applied since its `CRD` isn't ready.
 
+## Run GitHub pipeline locally
+
+To run the GitHub pipeline in the local environment, start the workbench, cd into the folder containing this
+`README.md` and execute the following command:
+
+```shell
+  act
+```
+
+On first execution you're asked which flavour of the act image should be used. Using the default `medium`
+is a good starting point.
