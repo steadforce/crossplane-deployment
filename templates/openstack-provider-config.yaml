@@ -1,0 +1,15 @@
+{{- if .Capabilities.APIVersions.Has "openstack.crossplane.io/v1beta1" }}
+{{- if .Values.providers.openstack }}
+apiVersion: openstack.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: openstack
+spec:
+  credentials:
+    secretRef:
+      key: config
+      name: openstack
+      namespace: crossplane
+    source: Secret
+{{ end }}
+{{ end }}

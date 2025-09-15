@@ -32,6 +32,8 @@ Or with output in JUnit format:
 ### Render helm charts
 The following command renders the charts like argo-cd does for local deployment:
 
+#### local
+
 ```
  helm template --release-name crossplane -n crossplane-system --include-crds --skip-tests \
   -a aws.upbound.io/v1beta1 \
@@ -41,6 +43,47 @@ The following command renders the charts like argo-cd does for local deployment:
   -f values-subchart-overrides.yaml \
   -f values-local.yaml \
   --output-dir _local/local . 
+```
+
+#### dev 01
+
+```
+ helm template --release-name crossplane -n crossplane-system --include-crds --skip-tests \
+  -a aws.upbound.io/v1beta1 \
+  -a external-secrets.io/v1beta1/ExternalSecret \
+  -a pkg.crossplane.io/v1 \
+  -a pkg.crossplane.io/v1beta1 \
+  -f values-subchart-overrides.yaml \
+  -f values-development.yaml \
+  --output-dir _local/dev01 . 
+```
+
+#### dev 02
+
+```
+ helm template --release-name crossplane -n crossplane-system --include-crds --skip-tests \
+  -a aws.upbound.io/v1beta1 \
+  -a external-secrets.io/v1beta1/ExternalSecret \
+  -a pkg.crossplane.io/v1 \
+  -a pkg.crossplane.io/v1beta1 \
+  -a openstack.crossplane.io/v1beta1 \
+  -f values-subchart-overrides.yaml \
+  -f values-development.yaml \
+  -f values-sf-k8s02-dev.yaml \
+  --output-dir _local/dev02 . 
+```
+
+#### prod 01
+
+```
+ helm template --release-name crossplane -n crossplane-system --include-crds --skip-tests \
+  -a aws.upbound.io/v1beta1 \
+  -a external-secrets.io/v1beta1/ExternalSecret \
+  -a pkg.crossplane.io/v1 \
+  -a pkg.crossplane.io/v1beta1 \
+  -f values-subchart-overrides.yaml \
+  -f values-production.yaml \
+  --output-dir _local/prod01 . 
 ```
 
 You can use this command to check if the output is as you expect. The `-a` parameters are needed since we use the

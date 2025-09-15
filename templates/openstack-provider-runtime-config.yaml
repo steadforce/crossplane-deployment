@@ -1,0 +1,14 @@
+{{- if .Capabilities.APIVersions.Has "pkg.crossplane.io/v1beta1" }}
+{{- if .Values.providers.openstack }}
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-openstack
+  namespace: crossplane-system
+spec:
+  deploymentTemplate:
+    spec:
+      replicas: 1
+      selector: {}
+{{ end }}
+{{ end }}
