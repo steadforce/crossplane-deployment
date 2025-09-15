@@ -6,9 +6,5 @@ metadata:
   name: provider-openstack
 spec:
   package: {{ .Values.providers.openstack.image.registry }}/{{ .Values.providers.openstack.image.repository }}:{{ .Values.providers.openstack.image.tag }}
-  runtimeConfigRef:
-    apiVersion: pkg.crossplane.io/v1beta1
-    kind: DeploymentRuntimeConfig
-    name: provider-openstack
 {{ end }}
 {{ end }}
