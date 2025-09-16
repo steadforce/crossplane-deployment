@@ -9,7 +9,7 @@ spec:
     secretRef:
       key: config
       name: openstack
-      namespace: crossplane
+      namespace: crossplane-system
     source: Secret
 {{ end }}
 {{ end }}
