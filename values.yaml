@@ -15,7 +15,7 @@ providers:
       tag: v1.23.2
     resources:
       limits:
-        cpu: 250m
+        cpu: 1000m
         memory: 320Mi
       requests:
         cpu: 50m
@@ -23,7 +23,7 @@ providers:
   default:
     resources:
       limits:
-        cpu: 250m
+        cpu: 400m
         memory: 384Mi
       requests:
         cpu: 50m
