@@ -16,7 +16,7 @@ providers:
     resources:
       limits:
         cpu: 1000m
-        memory: 320Mi
+        memory: 512Mi
       requests:
         cpu: 50m
         memory: 160Mi
