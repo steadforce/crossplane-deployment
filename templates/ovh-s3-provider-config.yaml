@@ -1,0 +1,24 @@
+{{- if and .Values.ovh (.Capabilities.APIVersions.Has "aws.upbound.io/v1beta1") }}
+apiVersion: aws.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: ovh-s3
+spec:
+  credentials:
+    secretRef:
+      key: creds
+      name: ovh
+      namespace: crossplane-system
+    source: Secret
+  endpoint:
+    hostnameImmutable: true
+    services:
+    - s3
+    url:
+      static: {{ .Values.ovh.s3.endpoint }}
+      type: Static
+  s3UsePathStyle: true
+  skipCredentialsValidation: true
+  skipRegionValidation: true
+  skipRequestingAccountId: true
+{{ end }}

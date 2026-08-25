@@ -1,0 +1,74 @@
+suite: test if values for ovh s3 provider config are correct
+capabilities:
+  apiVersions:
+  - aws.upbound.io/v1beta1
+templates:
+- templates/ovh-s3-provider-config.yaml
+release:
+  name: crossplane
+tests:
+- it: ovh s3 provider config is not rendered for local cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
+- it: ovh s3 provider config is not rendered for development cluster without ovh values
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
+- it: ovh s3 provider config is not rendered for production cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
+- it: ovh s3 provider config endpoint for sf-k8s04-dev cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - equal:
+      path: spec.endpoint.url
+      value:
+        static: https://s3.de.io.cloud.ovh.net
+        type: Static
+  - matchSnapshot: {}
+- it: ovh s3 provider config references the ovh secret
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - equal:
+      path: spec.credentials
+      value:
+        secretRef:
+          key: creds
+          name: ovh
+          namespace: crossplane-system
+        source: Secret
+- it: ovh s3 provider config skips aws specific validations
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - equal:
+      path: spec.s3UsePathStyle
+      value: true
+  - equal:
+      path: spec.skipCredentialsValidation
+      value: true
+  - equal:
+      path: spec.skipRegionValidation
+      value: true
+  - equal:
+      path: spec.skipRequestingAccountId
+      value: true
