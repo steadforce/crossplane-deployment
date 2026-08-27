@@ -61,14 +61,14 @@ tests:
   - ../values-sf-k8s04-dev.yaml
   asserts:
   - equal:
-      path: spec.s3UsePathStyle
+      path: spec.s3_use_path_style
       value: true
   - equal:
-      path: spec.skipCredentialsValidation
+      path: spec.skip_credentials_validation
       value: true
   - equal:
-      path: spec.skipRegionValidation
+      path: spec.skip_region_validation
       value: true
   - equal:
-      path: spec.skipRequestingAccountId
+      path: spec.skip_requesting_account_id
       value: true

@@ -17,8 +17,8 @@ spec:
     url:
       static: {{ .Values.ovh.s3.endpoint }}
       type: Static
-  s3UsePathStyle: true
-  skipCredentialsValidation: true
-  skipRegionValidation: true
-  skipRequestingAccountId: true
+  s3_use_path_style: true
+  skip_credentials_validation: true
+  skip_region_validation: true
+  skip_requesting_account_id: true
 {{ end }}
