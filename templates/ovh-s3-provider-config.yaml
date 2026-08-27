@@ -14,6 +14,9 @@ spec:
     hostnameImmutable: true
     services:
     - s3
+    signingName: s3
+    signingRegion: de
+    source: Custom
     url:
       static: {{ .Values.ovh.s3.endpoint }}
       type: Static

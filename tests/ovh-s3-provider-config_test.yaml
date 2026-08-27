@@ -39,6 +39,15 @@ tests:
       value:
         static: https://s3.de.io.cloud.ovh.net
         type: Static
+  - equal:
+      path: spec.endpoint.signingName
+      value: s3
+  - equal:
+      path: spec.endpoint.signingRegion
+      value: de
+  - equal:
+      path: spec.endpoint.source
+      value: Custom
   - matchSnapshot: {}
 - it: ovh s3 provider config references the ovh secret
   values:
