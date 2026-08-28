@@ -16,6 +16,12 @@ spec:
     partitionId: aws
     services:
     - s3
+    # terraform-provider-aws >= 6.23 reads bucket tags via the s3control api;
+    # routing it to the ovh endpoint lets the call fail with an api error that
+    # triggers the provider's fallback to the classic GetBucketTagging api,
+    # instead of a dns error on {account}.s3-control.de.amazonaws.com
+    # see https://github.com/hashicorp/terraform-provider-aws/issues/46202
+    - s3control
     signingName: s3
     signingRegion: de
     source: Custom
