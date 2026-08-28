@@ -48,6 +48,7 @@ tests:
   - equal:
       path: spec.endpoint.source
       value: Custom
+  - equal:
       path: spec.endpoint.partitionId
       value: aws
   - matchSnapshot: {}

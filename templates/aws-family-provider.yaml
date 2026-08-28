@@ -1,0 +1,14 @@
+{{- if .Capabilities.APIVersions.Has "pkg.crossplane.io/v1" }}
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  # same name crossplane gave the auto-installed dependency, so this
+  # definition adopts it instead of installing a second copy
+  name: upbound-provider-family-aws
+spec:
+  # the family provider is a dependency of provider-aws-s3 with an exact
+  # version constraint, but the crossplane package manager never upgrades
+  # an already-installed dependency - so it is managed here explicitly,
+  # reusing the provider-aws-s3 tag to keep both versions in lockstep
+  package: {{ .Values.providers.awsS3.image.registry }}/upbound/provider-family-aws:{{ .Values.providers.awsS3.image.tag }}
+{{ end }}

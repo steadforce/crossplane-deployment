@@ -1,0 +1,26 @@
+suite: test if values for aws family provider are correct
+capabilities:
+  apiVersions:
+  - pkg.crossplane.io/v1
+templates:
+- templates/aws-family-provider.yaml
+release:
+  name: crossplane
+tests:
+- it: aws family provider uses the same version as the aws s3 provider
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - matchRegex:
+      path: spec.package
+      pattern: "^xpkg.upbound.io/upbound/provider-family-aws:"
+  - matchSnapshot: {}
+- it: aws family provider adopts the name of the auto-installed dependency
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - equal:
+      path: metadata.name
+      value: upbound-provider-family-aws
