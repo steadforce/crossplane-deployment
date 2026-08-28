@@ -1,34 +1,46 @@
 suite: test if values for ovh s3 provider config are correct
-capabilities:
-  apiVersions:
-    - minio.crossplane.io/v1
+
 templates:
   - templates/ovh-s3-provider-config.yaml
+
 release:
   name: crossplane
+
 tests:
   - it: ovh s3 provider config is not rendered for local cluster
+    capabilities:
+      apiVersions: []
     values:
       - ../values-subchart-overrides.yaml
       - ../values-local.yaml
     asserts:
       - hasDocuments:
           count: 0
+
   - it: ovh s3 provider config is not rendered for development cluster without ovh values
+    capabilities:
+      apiVersions: []
     values:
       - ../values-subchart-overrides.yaml
       - ../values-development.yaml
     asserts:
       - hasDocuments:
           count: 0
+
   - it: ovh s3 provider config is not rendered for production cluster
+    capabilities:
+      apiVersions: []
     values:
       - ../values-subchart-overrides.yaml
       - ../values-production.yaml
     asserts:
       - hasDocuments:
           count: 0
+
   - it: ovh s3 provider config for sf-k8s04-dev cluster
+    capabilities:
+      apiVersions:
+        - minio.crossplane.io/v1
     values:
       - ../values-subchart-overrides.yaml
       - ../values-development.yaml
@@ -47,7 +59,11 @@ tests:
           path: spec.minioURL
           value: https://s3.de.io.cloud.ovh.net
       - matchSnapshot: {}
+
   - it: ovh s3 provider config references the ovh secret
+    capabilities:
+      apiVersions:
+        - minio.crossplane.io/v1
     values:
       - ../values-subchart-overrides.yaml
       - ../values-development.yaml
