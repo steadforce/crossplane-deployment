@@ -25,9 +25,9 @@ providers:
         memory: 160Mi
   minio:
     image:
-      registry: ghcr.io
-      repository: vshn/provider-minio/package
-      tag: latest
+      registry: xpkg.upbound.io
+      repository: vshn/provider-minio
+      tag: v0.4.5
     resources:
       limits:
         cpu: 1000m
