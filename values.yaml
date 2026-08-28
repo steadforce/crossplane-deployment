@@ -3,6 +3,9 @@ global:
 aws:
   s3:
     roleARN: arn:aws:iam::737742117295:role/assume_s3_access
+ovh:
+  s3:
+    endpoint: https://s3.de.io.cloud.ovh.net
 crossplane:
   resourcesCrossplane:
     requests:
@@ -13,6 +16,18 @@ providers:
       registry: xpkg.upbound.io
       repository: upbound/provider-aws-s3
       tag: v2.7.0
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 160Mi
+  minio:
+    image:
+      registry: ghcr.io
+      repository: vshn/provider-minio/package
+      tag: latest
     resources:
       limits:
         cpu: 1000m

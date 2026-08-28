@@ -1,5 +1,5 @@
-{{- if and .Values.ovh (.Capabilities.APIVersions.Has "aws.upbound.io/v1beta1") }}
-apiVersion: aws.upbound.io/v1beta1
+{{- if and .Values.ovh (.Capabilities.APIVersions.Has "minio.crossplane.io/v1") }}
+apiVersion: minio.crossplane.io/v1
 kind: ProviderConfig
 metadata:
   name: ovh-s3
@@ -10,26 +10,5 @@ spec:
       name: ovh
       namespace: crossplane-system
     source: Secret
-  endpoint:
-    hostnameImmutable: true
-    # explicit partition lets the provider tolerate the non-AWS region "de"
-    partitionId: aws
-    services:
-    - s3
-    # terraform-provider-aws >= 6.23 reads bucket tags via the s3control api;
-    # routing it to the ovh endpoint lets the call fail with an api error that
-    # triggers the provider's fallback to the classic GetBucketTagging api,
-    # instead of a dns error on {account}.s3-control.de.amazonaws.com
-    # see https://github.com/hashicorp/terraform-provider-aws/issues/46202
-    - s3control
-    signingName: s3
-    signingRegion: de
-    source: Custom
-    url:
-      static: {{ .Values.ovh.s3.endpoint }}
-      type: Static
-  s3_use_path_style: true
-  skip_credentials_validation: true
-  skip_region_validation: true
-  skip_requesting_account_id: true
-{{ end }}
+  minioURL: {{ .Values.ovh.s3.endpoint }}
+{{- end }}
