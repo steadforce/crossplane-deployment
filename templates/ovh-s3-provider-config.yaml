@@ -5,8 +5,7 @@ metadata:
   name: ovh-s3
 spec:
   credentials:
-    secretRef:
-      key: creds
+    apiSecretRef:
       name: ovh
       namespace: crossplane-system
     source: Secret
