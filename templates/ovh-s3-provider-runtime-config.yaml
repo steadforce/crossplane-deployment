@@ -12,5 +12,5 @@ spec:
         spec:
           containers:
             - name: package-runtime
-              resources: {{ toYaml .Values.providers.minio.resources | nindent 14 }}
+              resources: {{ toYaml .Values.providers.minio.resources | nindent 16 }}
 {{- end }}
