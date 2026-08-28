@@ -1,4 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "pkg.crossplane.io/v1" }}
+{{- if and .Values.ovh (.Capabilities.APIVersions.Has "pkg.crossplane.io/v1") }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
@@ -7,4 +7,4 @@ spec:
   package: {{ .Values.providers.minio.image.registry }}/{{ .Values.providers.minio.image.repository }}:{{ .Values.providers.minio.image.tag }}
   runtimeConfigRef:
     name: minio-provider
-{{ end }}
+{{- end }}
