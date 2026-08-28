@@ -12,6 +12,8 @@ spec:
     source: Secret
   endpoint:
     hostnameImmutable: true
+    # explicit partition lets the provider tolerate the non-AWS region "de"
+    partitionId: aws
     services:
     - s3
     signingName: s3

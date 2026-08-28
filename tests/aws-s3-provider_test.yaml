@@ -30,3 +30,20 @@ tests:
   asserts:
   - matchRegex: *packageRegex
   - matchSnapshot: {}
+- it: aws-s3-provider image is an ovh compatible version for sf-k8s04-dev cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  # terraform-provider-aws 6.23-6.42 (bundled in provider-aws-s3 v2.5.0/v2.6.0)
+  # sends a CreateBucket body OVH's S3 rejects with MalformedXML, fixed with
+  # 6.43 (bundled from provider-aws-s3 v2.7.0 on).
+  # see https://github.com/hashicorp/terraform-provider-aws/issues/47061
+  - notEqual:
+      path: spec.package
+      value: xpkg.upbound.io/upbound/provider-aws-s3:v2.5.0
+  - notEqual:
+      path: spec.package
+      value: xpkg.upbound.io/upbound/provider-aws-s3:v2.6.0
+  - matchSnapshot: {}

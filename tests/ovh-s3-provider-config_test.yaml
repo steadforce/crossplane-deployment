@@ -48,6 +48,8 @@ tests:
   - equal:
       path: spec.endpoint.source
       value: Custom
+      path: spec.endpoint.partitionId
+      value: aws
   - matchSnapshot: {}
 - it: ovh s3 provider config references the ovh secret
   values:
