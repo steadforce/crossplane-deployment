@@ -1,11 +1,8 @@
 suite: test if values for ovh s3 provider config are correct
-
 templates:
   - templates/ovh-s3-provider-config.yaml
-
 release:
   name: crossplane
-
 tests:
   - it: ovh s3 provider config is not rendered for local cluster
     capabilities:
@@ -55,12 +52,9 @@ tests:
       - equal:
           path: metadata.name
           value: ovh-s3
-      - equal:
-          path: spec.minioURL
-          value: https://s3.de.io.cloud.ovh.net
       - matchSnapshot: {}
 
-  - it: ovh s3 provider config references the ovh secret
+  - it: ovh s3 provider config uses Secret credentials
     capabilities:
       apiVersions:
         - minio.crossplane.io/v1
@@ -70,10 +64,34 @@ tests:
       - ../values-sf-k8s04-dev.yaml
     asserts:
       - equal:
-          path: spec.credentials
-          value:
-            secretRef:
-              key: creds
-              name: ovh
-              namespace: crossplane-system
-            source: Secret
+          path: spec.credentials.source
+          value: Secret
+
+  - it: ovh s3 provider config references the ovh API secret
+    capabilities:
+      apiVersions:
+        - minio.crossplane.io/v1
+    values:
+      - ../values-subchart-overrides.yaml
+      - ../values-development.yaml
+      - ../values-sf-k8s04-dev.yaml
+    asserts:
+      - equal:
+          path: spec.credentials.apiSecretRef.name
+          value: ovh
+      - equal:
+          path: spec.credentials.apiSecretRef.namespace
+          value: crossplane-system
+
+  - it: ovh s3 provider config uses the correct endpoint
+    capabilities:
+      apiVersions:
+        - minio.crossplane.io/v1
+    values:
+      - ../values-subchart-overrides.yaml
+      - ../values-development.yaml
+      - ../values-sf-k8s04-dev.yaml
+    asserts:
+      - equal:
+          path: spec.minioURL
+          value: https://s3.de.io.cloud.ovh.net

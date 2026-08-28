@@ -1,0 +1,55 @@
+suite: test if values for ovh s3 provider are correct
+capabilities:
+  apiVersions:
+    - pkg.crossplane.io/v1
+templates:
+  - templates/ovh-s3-provider.yaml
+release:
+  name: crossplane
+tests:
+  - it: ovh s3 provider is not rendered for local cluster
+    values:
+      - ../values-subchart-overrides.yaml
+      - ../values-local.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ovh s3 provider is not rendered for development cluster without ovh values
+    values:
+      - ../values-subchart-overrides.yaml
+      - ../values-development.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ovh s3 provider is not rendered for production cluster
+    values:
+      - ../values-subchart-overrides.yaml
+      - ../values-production.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ovh s3 provider for sf-k8s04-dev cluster
+    values:
+      - ../values-subchart-overrides.yaml
+      - ../values-development.yaml
+      - ../values-sf-k8s04-dev.yaml
+    asserts:
+      - equal:
+          path: apiVersion
+          value: pkg.crossplane.io/v1
+      - equal:
+          path: kind
+          value: Provider
+      - equal:
+          path: metadata.name
+          value: provider-minio
+      - equal:
+          path: spec.package
+          value: xpkg.upbound.io/vshn/provider-minio:v0.4.5
+      - equal:
+          path: spec.runtimeConfigRef.name
+          value: minio-provider
+      - matchSnapshot: {}
