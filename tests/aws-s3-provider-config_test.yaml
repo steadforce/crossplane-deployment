@@ -7,6 +7,14 @@ templates:
 release:
   name: crossplane
 tests:
+- it: aws s3 provider config is not rendered for sf-k8s04-dev cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
 - it: aws s3 provider config roleARN for local cluster
   values:
   - ../values-subchart-overrides.yaml

@@ -1,4 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "pkg.crossplane.io/v1" }}
+{{- if and .Values.aws.s3.enabled (.Capabilities.APIVersions.Has "pkg.crossplane.io/v1") }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
