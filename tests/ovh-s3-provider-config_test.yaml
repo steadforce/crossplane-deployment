@@ -5,41 +5,39 @@ release:
   name: crossplane
 tests:
   - it: ovh s3 provider config is not rendered for local cluster
-    capabilities:
+    capabilities: &noApiVersionsCapabilities
       apiVersions: []
     values:
-      - ../values-subchart-overrides.yaml
+      - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
       - ../values-local.yaml
     asserts:
       - hasDocuments:
           count: 0
 
   - it: ovh s3 provider config is not rendered for development cluster without ovh values
-    capabilities:
-      apiVersions: []
+    capabilities: *noApiVersionsCapabilities
     values:
-      - ../values-subchart-overrides.yaml
+      - *subchartOverrideValuesFile
       - ../values-development.yaml
     asserts:
       - hasDocuments:
           count: 0
 
   - it: ovh s3 provider config is not rendered for production cluster
-    capabilities:
-      apiVersions: []
+    capabilities: *noApiVersionsCapabilities
     values:
-      - ../values-subchart-overrides.yaml
+      - *subchartOverrideValuesFile
       - ../values-production.yaml
     asserts:
       - hasDocuments:
           count: 0
 
   - it: ovh s3 provider config for sf-k8s04-dev cluster
-    capabilities:
+    capabilities: &minioProviderCapabilities
       apiVersions:
         - minio.crossplane.io/v1
-    values:
-      - ../values-subchart-overrides.yaml
+    values: &sfK8s04DevValues
+      - *subchartOverrideValuesFile
       - ../values-development.yaml
       - ../values-sf-k8s04-dev.yaml
     asserts:
@@ -55,26 +53,16 @@ tests:
       - matchSnapshot: {}
 
   - it: ovh s3 provider config uses Secret credentials
-    capabilities:
-      apiVersions:
-        - minio.crossplane.io/v1
-    values:
-      - ../values-subchart-overrides.yaml
-      - ../values-development.yaml
-      - ../values-sf-k8s04-dev.yaml
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s04DevValues
     asserts:
       - equal:
           path: spec.credentials.source
           value: Secret
 
   - it: ovh s3 provider config references the ovh API secret
-    capabilities:
-      apiVersions:
-        - minio.crossplane.io/v1
-    values:
-      - ../values-subchart-overrides.yaml
-      - ../values-development.yaml
-      - ../values-sf-k8s04-dev.yaml
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s04DevValues
     asserts:
       - equal:
           path: spec.credentials.apiSecretRef.name
@@ -84,13 +72,8 @@ tests:
           value: crossplane-system
 
   - it: ovh s3 provider config uses the correct endpoint
-    capabilities:
-      apiVersions:
-        - minio.crossplane.io/v1
-    values:
-      - ../values-subchart-overrides.yaml
-      - ../values-development.yaml
-      - ../values-sf-k8s04-dev.yaml
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s04DevValues
     asserts:
       - equal:
           path: spec.minioURL

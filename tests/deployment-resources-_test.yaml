@@ -6,7 +6,7 @@ release:
 tests:
 - it: crossplane container resources for local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -29,7 +29,7 @@ tests:
 
 - it: crossplane container resources for dev-cloud01 cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &crossplaneResourcesAsserts
   - matchRegex:
@@ -52,6 +52,6 @@ tests:
 
 - it: crossplane container resources for prod-cloud01 cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *crossplaneResourcesAsserts

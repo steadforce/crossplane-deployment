@@ -9,7 +9,7 @@ release:
 tests:
 - it: aws family provider is not rendered for sf-k8s04-dev cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-development.yaml
   - ../values-sf-k8s04-dev.yaml
   asserts:
@@ -17,7 +17,7 @@ tests:
       count: 0
 - it: aws family provider uses the same version as the aws s3 provider
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -26,7 +26,7 @@ tests:
   - matchSnapshot: {}
 - it: aws family provider adopts the name of the auto-installed dependency
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
   - equal:

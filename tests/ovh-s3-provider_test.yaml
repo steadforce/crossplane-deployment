@@ -9,7 +9,7 @@ release:
 tests:
   - it: ovh s3 provider is not rendered for local cluster
     values:
-      - ../values-subchart-overrides.yaml
+      - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
       - ../values-local.yaml
     asserts:
       - hasDocuments:
@@ -17,7 +17,7 @@ tests:
 
   - it: ovh s3 provider is not rendered for development cluster without ovh values
     values:
-      - ../values-subchart-overrides.yaml
+      - *subchartOverrideValuesFile
       - ../values-development.yaml
     asserts:
       - hasDocuments:
@@ -25,7 +25,7 @@ tests:
 
   - it: ovh s3 provider is not rendered for production cluster
     values:
-      - ../values-subchart-overrides.yaml
+      - *subchartOverrideValuesFile
       - ../values-production.yaml
     asserts:
       - hasDocuments:
@@ -33,7 +33,7 @@ tests:
 
   - it: ovh s3 provider for sf-k8s04-dev cluster
     values:
-      - ../values-subchart-overrides.yaml
+      - *subchartOverrideValuesFile
       - ../values-development.yaml
       - ../values-sf-k8s04-dev.yaml
     asserts:

@@ -9,7 +9,7 @@ release:
 tests:
 - it: aws s3 provider is not rendered for sf-k8s04-dev cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-development.yaml
   - ../values-sf-k8s04-dev.yaml
   asserts:
@@ -17,7 +17,7 @@ tests:
       count: 0
 - it: aws-s3-provider container image for local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
   - matchRegex: &packageRegex
@@ -26,14 +26,14 @@ tests:
   - matchSnapshot: {}
 - it: aws-s3-provider container image for development cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts:
   - matchRegex: *packageRegex
   - matchSnapshot: {}
 - it: aws-s3-provider container image for production cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts:
   - matchRegex: *packageRegex
