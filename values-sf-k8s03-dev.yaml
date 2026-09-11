@@ -1,0 +1,7 @@
+aws:
+  s3:
+    enabled: false
+hetzner:
+  s3:
+    endpoint: https://s3.de.io.cloud.ovh.net
+    #TODO: set endpoint
