@@ -3,5 +3,4 @@ aws:
     enabled: false
 hetzner:
   s3:
-    endpoint: https://s3.de.io.cloud.ovh.net
-    #TODO: set endpoint
+    endpoint: fsn1.your-objectstorage.com

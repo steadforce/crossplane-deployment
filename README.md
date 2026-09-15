@@ -15,8 +15,8 @@ This chart wraps the upstream [`crossplane`](https://charts.crossplane.io) Helm 
 - `ExternalSecret` resources that fetch the AWS and OVH credentials referenced by the `ProviderConfig` resources.
 
 > [!NOTE]
-> The AWS S3 provider and the OVH provider are mutually exclusive per cluster. AWS S3 is enabled by default and
-> disabled per environment via `aws.s3.enabled: false`. OVH is only enabled when an `ovh` values block is present.
+> The AWS S3, Hetzner and OVH provider are mutually exclusive per cluster. AWS S3 is enabled by default and
+> disabled per environment via `aws.s3.enabled: false`. OVH and Hetzner are only enabled when the respective value block is present.
 
 ## Repository Structure
 
@@ -27,7 +27,8 @@ This chart wraps the upstream [`crossplane`](https://charts.crossplane.io) Helm 
 | `values-local.yaml`                  | Overrides for local development clusters.                            |
 | `values-development.yaml`            | Overrides for the development cluster.                               |
 | `values-production.yaml`             | Overrides for the production cluster.                                |
-| `values-sf-k8s04-dev.yaml`           | Overrides for the `sf-k8s04-dev` cluster (disables AWS, enables OVH). |
+| `values-sf-k8s03-dev.yaml`           | Overrides for the `sf-k8s03-dev` cluster (disables AWS, enables Hetzner S3 bucket config). |
+| `values-sf-k8s04-dev.yaml`           | Overrides for the `sf-k8s04-dev` cluster (disables AWS, enables OVH S3 bucket config). |
 | `values-subchart-overrides.yaml`     | Values consumed directly by the `crossplane` subchart. See below.    |
 | `templates/`                         | Provider, provider config, runtime config, and secret templates.     |
 | `charts/`                            | Vendored `crossplane` subchart dependency archive.                   |
