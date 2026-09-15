@@ -1,0 +1,6 @@
+aws:
+  s3:
+    enabled: false
+hetzner:
+  s3:
+    endpoint: https://fsn1.your-objectstorage.com

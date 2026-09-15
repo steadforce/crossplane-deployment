@@ -1,0 +1,13 @@
+{{- if and .Values.ovh (.Capabilities.APIVersions.Has "minio.crossplane.io/v1") }}
+apiVersion: minio.crossplane.io/v1
+kind: ProviderConfig
+metadata:
+  name: ovh-s3
+spec:
+  credentials:
+    apiSecretRef:
+      name: ovh
+      namespace: crossplane-system
+    source: Secret
+  minioURL: {{ .Values.ovh.s3.endpoint }}
+{{- end }}

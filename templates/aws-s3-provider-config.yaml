@@ -1,4 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "aws.upbound.io/v1beta1" }}
+{{- if and .Values.aws.s3.enabled (.Capabilities.APIVersions.Has "aws.upbound.io/v1beta1") }}
 apiVersion: aws.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:

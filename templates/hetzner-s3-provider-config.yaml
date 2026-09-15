@@ -1,0 +1,13 @@
+{{- if and .Values.hetzner (.Capabilities.APIVersions.Has "minio.crossplane.io/v1") }}
+apiVersion: minio.crossplane.io/v1
+kind: ProviderConfig
+metadata:
+  name: hetzner-s3
+spec:
+  credentials:
+    apiSecretRef:
+      name: hetzner
+      namespace: crossplane-system
+    source: Secret
+  minioURL: {{ .Values.hetzner.s3.endpoint }}
+{{- end }}

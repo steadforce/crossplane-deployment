@@ -1,0 +1,6 @@
+aws:
+  s3:
+    enabled: false
+ovh:
+  s3:
+    endpoint: https://s3.de.io.cloud.ovh.net
