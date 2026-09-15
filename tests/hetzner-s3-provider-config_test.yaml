@@ -77,4 +77,4 @@ tests:
     asserts:
       - equal:
           path: spec.minioURL
-          value: fsn1.your-objectstorage.com
+          value: https://fsn1.your-objectstorage.com

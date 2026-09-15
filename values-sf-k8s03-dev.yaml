@@ -3,4 +3,4 @@ aws:
     enabled: false
 hetzner:
   s3:
-    endpoint: fsn1.your-objectstorage.com
+    endpoint: https://fsn1.your-objectstorage.com
