@@ -1,10 +1,10 @@
-suite: test if the resource settings for ovh-s3-provider container in cluster is correct
+suite: test if the resource settings for hetzner-s3-provider container in cluster is correct
 templates:
   - templates/minio-s3-provider-runtime-config.yaml
 release:
   name: crossplane
 tests:
-  - it: ovh s3 provider runtime config is not rendered for local cluster
+  - it: hetzner s3 provider runtime config is not rendered for local cluster
     capabilities:
       apiVersions: []
     values:
@@ -14,7 +14,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider runtime config is not rendered for development cluster without ovh values
+  - it: hetzner s3 provider runtime config is not rendered for development cluster without hetzner values
     capabilities:
       apiVersions: []
     values:
@@ -24,7 +24,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider runtime config is not rendered for production cluster
+  - it: hetzner s3 provider runtime config is not rendered for production cluster
     capabilities:
       apiVersions: []
     values:
@@ -34,29 +34,29 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh-s3-provider container resources for sf-k8s04-dev cluster
+  - it: hetzner-s3-provider container resources for sf-k8s03-dev cluster
     capabilities:
       apiVersions:
         - pkg.crossplane.io/v1beta1
     values:
       - *subchartOverrideValuesFile
       - ../values-development.yaml
-      - ../values-sf-k8s04-dev.yaml
+      - ../values-sf-k8s03-dev.yaml
     asserts:
       - matchRegex:
           path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
-          # on sf-k8s04-dev cluster we expect non 0 cpu limits
+          # on sf-k8s03-dev cluster we expect non 0 cpu limits
           pattern: "^[1-9].*"
       - matchRegex:
           path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
-          # on sf-k8s04-dev cluster we expect non 0 memory limits
+          # on sf-k8s03-dev cluster we expect non 0 memory limits
           pattern: "^[1-9].*"
       - matchRegex:
           path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.cpu
-          # on sf-k8s04-dev cluster we expect non 0 cpu requests
+          # on sf-k8s03-dev cluster we expect non 0 cpu requests
           pattern: "^[1-9].*"
       - matchRegex:
           path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.memory
-          # on sf-k8s04-dev cluster we expect non 0 memory requests
+          # on sf-k8s03-dev cluster we expect non 0 memory requests
           pattern: "^[1-9].*"
       - matchSnapshot: {}

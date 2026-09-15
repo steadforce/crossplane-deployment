@@ -1,13 +1,13 @@
-suite: test if values for ovh s3 provider are correct
+suite: test if values for minio s3 provider are correct
 capabilities:
   apiVersions:
     - pkg.crossplane.io/v1
 templates:
-  - templates/ovh-s3-provider.yaml
+  - templates/minio-s3-provider.yaml
 release:
   name: crossplane
 tests:
-  - it: ovh s3 provider is not rendered for local cluster
+  - it: minio s3 provider is not rendered for local cluster
     values:
       - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
       - ../values-local.yaml
@@ -15,7 +15,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider is not rendered for development cluster without ovh values
+  - it: minio s3 provider is not rendered for development cluster without ovh or hetzner values
     values:
       - *subchartOverrideValuesFile
       - ../values-development.yaml
@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider is not rendered for production cluster
+  - it: minio s3 provider is not rendered for production cluster
     values:
       - *subchartOverrideValuesFile
       - ../values-production.yaml
@@ -31,11 +31,34 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider for sf-k8s04-dev cluster
+  - it: minio s3 provider is rendered for sf-k8s04-dev cluster with ovh
     values:
       - *subchartOverrideValuesFile
       - ../values-development.yaml
       - ../values-sf-k8s04-dev.yaml
+    asserts:
+      - equal:
+          path: apiVersion
+          value: pkg.crossplane.io/v1
+      - equal:
+          path: kind
+          value: Provider
+      - equal:
+          path: metadata.name
+          value: provider-minio
+      - equal:
+          path: spec.package
+          value: xpkg.upbound.io/vshn/provider-minio:v0.4.5
+      - equal:
+          path: spec.runtimeConfigRef.name
+          value: minio-provider
+      - matchSnapshot: {}
+
+  - it: minio s3 provider is rendered for sf-k8s03-dev cluster with hetzner
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+      - ../values-sf-k8s03-dev.yaml
     asserts:
       - equal:
           path: apiVersion
