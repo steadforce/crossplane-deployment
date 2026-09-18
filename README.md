@@ -29,6 +29,7 @@ This chart wraps the upstream [`crossplane`](https://charts.crossplane.io) Helm 
 | `values-production.yaml`             | Overrides for the production cluster.                                |
 | `values-sf-k8s03-dev.yaml`           | Overrides for the `sf-k8s03-dev` cluster (disables AWS, enables Hetzner S3 bucket config). |
 | `values-sf-k8s04-dev.yaml`           | Overrides for the `sf-k8s04-dev` cluster (disables AWS, enables OVH S3 bucket config). |
+| `values-sf-k8s05-dev.yaml`           | Overrides for the `sf-k8s05-dev` cluster (disables AWS, enables Ionos S3 bucket config). |
 | `values-subchart-overrides.yaml`     | Values consumed directly by the `crossplane` subchart. See below.    |
 | `templates/`                         | Provider, provider config, runtime config, and secret templates.     |
 | `charts/`                            | Vendored `crossplane` subchart dependency archive.                   |
@@ -137,3 +138,10 @@ Pushes and pull requests trigger reusable workflows from
 
 [Renovate](https://docs.renovatebot.com) keeps the `crossplane` subchart dependency up to date and archives the
 updated subchart into `charts/` via the `helmUpdateSubChartArchives` post-update option, see `renovate.json`.
+
+## S3 buckets
+
+For new S3 buckets created via other repos adjust regions depending on provider:
+- k8s03 / Hetzner: fsn1
+- k8s04 / OVH: de
+- k8s05 / Ionos: eu-central-3

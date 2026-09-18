@@ -1,0 +1,13 @@
+{{- if and .Values.ionos (.Capabilities.APIVersions.Has "minio.crossplane.io/v1") }}
+apiVersion: minio.crossplane.io/v1
+kind: ProviderConfig
+metadata:
+  name: ionos-s3
+spec:
+  credentials:
+    apiSecretRef:
+      name: ionos
+      namespace: crossplane-system
+    source: Secret
+  minioURL: {{ .Values.ionos.s3.endpoint }}
+{{- end }}

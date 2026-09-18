@@ -1,4 +1,4 @@
-suite: test if the resource settings for hetzner-s3-provider container in cluster is correct
+suite: test if the resource settings for ionos-s3-provider container in cluster is correct
 templates:
   - templates/minio-s3-provider-runtime-config.yaml
 release:
@@ -6,7 +6,7 @@ release:
 values:
   - ../values-subchart-overrides.yaml
 tests:
-  - it: hetzner s3 provider runtime config is not rendered for local cluster
+  - it: ionos s3 provider runtime config is not rendered for local cluster
     capabilities:
       apiVersions: []
     values:
@@ -15,7 +15,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider runtime config is not rendered for development cluster without hetzner values
+  - it: ionos s3 provider runtime config is not rendered for development cluster without ionos values
     capabilities:
       apiVersions: []
     values:
@@ -24,7 +24,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider runtime config is not rendered for production cluster
+  - it: ionos s3 provider runtime config is not rendered for production cluster
     capabilities:
       apiVersions: []
     values:
@@ -33,15 +33,15 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner-s3-provider container resources for sf-k8s03-dev cluster
+  - it: ionos-s3-provider container resources for sf-k8s05-dev cluster
     capabilities:
       apiVersions:
         - pkg.crossplane.io/v1beta1
     values:
       - ../values-development.yaml
-      - ../values-sf-k8s03-dev.yaml
+      - ../values-sf-k8s05-dev.yaml
     asserts:
-      # on sf-k8s03-dev cluster we expect non 0 cpu, memory limits & requests
+      # on sf-k8s05-dev cluster we expect non 0 cpu, memory limits & requests
       - matchRegex:
           path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
           pattern: "^[1-9].*"

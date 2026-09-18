@@ -1,4 +1,4 @@
-{{- if and (or .Values.ovh .Values.hetzner) (.Capabilities.APIVersions.Has "pkg.crossplane.io/v1") }}
+{{- if and (or .Values.ovh .Values.hetzner .Values.ionos) (.Capabilities.APIVersions.Has "pkg.crossplane.io/v1") }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:

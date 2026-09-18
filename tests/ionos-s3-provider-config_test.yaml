@@ -1,0 +1,78 @@
+suite: test if values for ionos s3 provider config are correct
+templates:
+  - templates/ionos-s3-provider-config.yaml
+release:
+  name: crossplane
+values:
+  - ../values-subchart-overrides.yaml
+tests:
+  - it: ionos s3 provider config is not rendered for local cluster
+    capabilities: &noApiVersionsCapabilities
+      apiVersions: []
+    values:
+      - ../values-local.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ionos s3 provider config is not rendered for development cluster without ionos values
+    capabilities: *noApiVersionsCapabilities
+    values:
+      - ../values-development.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ionos s3 provider config is not rendered for production cluster
+    capabilities: *noApiVersionsCapabilities
+    values:
+      - ../values-production.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ionos s3 provider config for sf-k8s05-dev cluster
+    capabilities: &minioProviderCapabilities
+      apiVersions:
+        - minio.crossplane.io/v1
+    values: &sfK8s05DevValues
+      - ../values-development.yaml
+      - ../values-sf-k8s05-dev.yaml
+    asserts:
+      - equal:
+          path: apiVersion
+          value: minio.crossplane.io/v1
+      - equal:
+          path: kind
+          value: ProviderConfig
+      - equal:
+          path: metadata.name
+          value: ionos-s3
+      - matchSnapshot: {}
+
+  - it: ionos s3 provider config uses Secret credentials
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s05DevValues
+    asserts:
+      - equal:
+          path: spec.credentials.source
+          value: Secret
+
+  - it: ionos s3 provider config references the ionos API secret
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s05DevValues
+    asserts:
+      - equal:
+          path: spec.credentials.apiSecretRef.name
+          value: ionos
+      - equal:
+          path: spec.credentials.apiSecretRef.namespace
+          value: crossplane-system
+
+  - it: ionos s3 provider config uses the correct endpoint
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s05DevValues
+    asserts:
+      - equal:
+          path: spec.minioURL
+          value: https://s3.eu-central-3.ionoscloud.com
