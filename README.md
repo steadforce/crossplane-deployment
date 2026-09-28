@@ -165,7 +165,7 @@ writes XUnit.
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
 | `helm-unittest.yaml` | every push | Calls `helm-unittest.yaml@v4.2.0` of `steadforce/steadops-workflows` |
-| `trufflehog.yaml` | push/PR to `main`, manual | Calls `trufflehog-oss.yaml@v3.0.0`, scans the pushed commit range |
+| `trufflehog.yaml` | push/PR to `main`, manual | Calls `trufflehog-oss.yaml@v4.2.0`, scans the pushed commit range |
 
 The reusable helm-unittest workflow runs every chart that has a `tests/` directory. It installs the dependencies
 with `helm dependency build`, pinned by the committed `Chart.lock` (it falls back to `helm dependency update` with a
