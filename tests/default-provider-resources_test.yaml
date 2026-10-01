@@ -58,3 +58,18 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
   asserts: *defaultProviderResourcesAsserts
+
+- it: sets the raised default-provider memory limit in development
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts: &defaultMemoryLimitAsserts
+  - equal:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+      value: 512Mi
+
+- it: sets the raised default-provider memory limit in production
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts: *defaultMemoryLimitAsserts

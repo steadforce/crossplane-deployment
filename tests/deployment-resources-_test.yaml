@@ -55,3 +55,36 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
   asserts: *crossplaneResourcesAsserts
+
+- it: uses the local crossplane resources for the init container
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
+      value:
+        limits:
+          cpu: 0m
+          memory: 1024Mi
+        requests:
+          cpu: 0m
+          memory: 0Mi
+
+- it: sets the raised crossplane memory request in development
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts: &crossplaneMemoryRequestAsserts
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
+      value: 320Mi
+  - equal:
+      path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources.requests.memory
+      value: 320Mi
+
+- it: sets the raised crossplane memory request in production
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts: *crossplaneMemoryRequestAsserts

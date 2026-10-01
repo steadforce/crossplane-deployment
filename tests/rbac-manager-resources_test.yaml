@@ -1,0 +1,47 @@
+suite: rbac manager resources per stage
+templates:
+- charts/crossplane/templates/rbac-manager-deployment.yaml
+release:
+  name: crossplane
+tests:
+- it: uses zero cpu and memory requests for the rbac manager on local
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - equal: &rbacManagerLocalResourcesAssert
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources
+      value:
+        limits:
+          cpu: 0m
+          memory: 512Mi
+        requests:
+          cpu: 0m
+          memory: 0Mi
+  - equal:
+      <<: *rbacManagerLocalResourcesAssert
+      path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
+  - matchSnapshot: {}
+- it: keeps the subchart rbac manager resources in development
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts: &rbacManagerDefaultResourcesAsserts
+  - equal: &rbacManagerDefaultResourcesAssert
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources
+      value:
+        limits:
+          cpu: 100m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+  - equal:
+      <<: *rbacManagerDefaultResourcesAssert
+      path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
+  - matchSnapshot: {}
+- it: keeps the subchart rbac manager resources in production
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts: *rbacManagerDefaultResourcesAsserts
