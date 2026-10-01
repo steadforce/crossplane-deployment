@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: aws s3 provider config roleARN for local cluster
+- it: assumes the development s3 access role on local
   values:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -17,14 +17,14 @@ tests:
       content:
         roleARN: arn:aws:iam::737742117295:role/assume_s3_access
   - matchSnapshot: {}
-- it: aws s3 provider config roleARN for development cluster
+- it: assumes the development s3 access role in development
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
   asserts:
   - contains: *devRoleARN
   - matchSnapshot: {}
-- it: aws s3 provider config roleARN for production cluster
+- it: assumes the production s3 access role in production
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml

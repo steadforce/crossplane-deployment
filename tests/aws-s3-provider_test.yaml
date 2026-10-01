@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: aws-s3-provider container image for local cluster
+- it: uses the upbound provider-aws-s3 package on local
   values:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -16,14 +16,14 @@ tests:
       path: spec.package
       pattern: "^xpkg.upbound.io/upbound/provider-aws-s3:"
   - matchSnapshot: {}
-- it: aws-s3-provider container image for development cluster
+- it: uses the upbound provider-aws-s3 package in development
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
   asserts:
   - matchRegex: *packageRegex
   - matchSnapshot: {}
-- it: aws-s3-provider container image for production cluster
+- it: uses the upbound provider-aws-s3 package in production
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml

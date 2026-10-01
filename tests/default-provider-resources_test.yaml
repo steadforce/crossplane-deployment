@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: default-provider container resources for local cluster
+- it: uses zero cpu and memory requests and a zero cpu limit for default-provider on local
   values:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -30,7 +30,7 @@ tests:
       pattern: "^0.*"
   - matchSnapshot: {}
 
-- it: default-provider container resources for dev-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for default-provider in development
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
@@ -53,7 +53,7 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: default-provider container resources for prod-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for default-provider in production
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml

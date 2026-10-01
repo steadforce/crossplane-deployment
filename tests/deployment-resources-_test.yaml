@@ -4,7 +4,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: crossplane container resources for local cluster
+- it: uses zero cpu and memory requests and a zero cpu limit for crossplane on local
   values:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -27,7 +27,7 @@ tests:
       pattern: "^0.*"
   - matchSnapshot: {}
 
-- it: crossplane container resources for dev-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for crossplane in development
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
@@ -50,7 +50,7 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: crossplane container resources for prod-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for crossplane in production
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
