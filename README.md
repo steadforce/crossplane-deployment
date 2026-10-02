@@ -98,7 +98,7 @@ The following command renders the charts the same way Argo CD does for a local d
   --release-name crossplane \
   --skip-tests \
   -a aws.upbound.io/v1beta1 \
-  -a external-secrets.io/v1beta1/ExternalSecret \
+  -a external-secrets.io/v1/ExternalSecret
   -a pkg.crossplane.io/v1 \
   -a pkg.crossplane.io/v1beta1 \
   -f values-subchart-overrides.yaml \
