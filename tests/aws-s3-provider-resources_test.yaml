@@ -7,9 +7,17 @@ templates:
 release:
   name: crossplane
 tests:
+- it: aws s3 provider runtime config is not rendered for sf-k8s04-dev cluster
+  values:
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
 - it: aws-s3-provider container resources for local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -32,7 +40,7 @@ tests:
 
 - it: aws-s3-provider container resources for dev-cloud01 cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &awsS3ProviderResourcesAsserts
   - matchRegex:
@@ -55,6 +63,6 @@ tests:
 
 - it: aws-s3-provider container resources for prod-cloud01 cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *awsS3ProviderResourcesAsserts

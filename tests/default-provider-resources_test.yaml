@@ -9,7 +9,7 @@ release:
 tests:
 - it: default-provider container resources for local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -32,7 +32,7 @@ tests:
 
 - it: default-provider container resources for dev-cloud01 cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &defaultProviderResourcesAsserts
   - matchRegex:
@@ -55,6 +55,6 @@ tests:
 
 - it: default-provider container resources for prod-cloud01 cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *defaultProviderResourcesAsserts

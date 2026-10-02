@@ -1,0 +1,80 @@
+suite: test if values for hetzner s3 provider config are correct
+templates:
+  - templates/hetzner-s3-provider-config.yaml
+release:
+  name: crossplane
+tests:
+  - it: hetzner s3 provider config is not rendered for local cluster
+    capabilities: &noApiVersionsCapabilities
+      apiVersions: []
+    values:
+      - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+      - ../values-local.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: hetzner s3 provider config is not rendered for development cluster without hetzner values
+    capabilities: *noApiVersionsCapabilities
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: hetzner s3 provider config is not rendered for production cluster
+    capabilities: *noApiVersionsCapabilities
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-production.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: hetzner s3 provider config for sf-k8s03-dev cluster
+    capabilities: &minioProviderCapabilities
+      apiVersions:
+        - minio.crossplane.io/v1
+    values: &sfK8s03DevValues
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+      - ../values-sf-k8s03-dev.yaml
+    asserts:
+      - equal:
+          path: apiVersion
+          value: minio.crossplane.io/v1
+      - equal:
+          path: kind
+          value: ProviderConfig
+      - equal:
+          path: metadata.name
+          value: hetzner-s3
+      - matchSnapshot: {}
+
+  - it: hetzner s3 provider config uses Secret credentials
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s03DevValues
+    asserts:
+      - equal:
+          path: spec.credentials.source
+          value: Secret
+
+  - it: hetzner s3 provider config references the hetzner API secret
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s03DevValues
+    asserts:
+      - equal:
+          path: spec.credentials.apiSecretRef.name
+          value: hetzner
+      - equal:
+          path: spec.credentials.apiSecretRef.namespace
+          value: crossplane-system
+
+  - it: hetzner s3 provider config uses the correct endpoint
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s03DevValues
+    asserts:
+      - equal:
+          path: spec.minioURL
+          value: https://fsn1.your-objectstorage.com

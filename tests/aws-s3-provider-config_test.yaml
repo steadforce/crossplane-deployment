@@ -7,26 +7,34 @@ templates:
 release:
   name: crossplane
 tests:
+- it: aws s3 provider config is not rendered for sf-k8s04-dev cluster
+  values:
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
 - it: aws s3 provider config roleARN for local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
-  - contains: &devRoleARN
+  - contains: &devRoleARNAssert
       path: spec.assumeRoleChain
       content:
         roleARN: arn:aws:iam::737742117295:role/assume_s3_access
   - matchSnapshot: {}
 - it: aws s3 provider config roleARN for development cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts:
-  - contains: *devRoleARN
+  - contains: *devRoleARNAssert
   - matchSnapshot: {}
 - it: aws s3 provider config roleARN for production cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts:
   - contains:

@@ -1,0 +1,62 @@
+suite: test if the resource settings for ovh-s3-provider container in cluster is correct
+templates:
+  - templates/minio-s3-provider-runtime-config.yaml
+release:
+  name: crossplane
+tests:
+  - it: ovh s3 provider runtime config is not rendered for local cluster
+    capabilities:
+      apiVersions: []
+    values:
+      - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+      - ../values-local.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ovh s3 provider runtime config is not rendered for development cluster without ovh values
+    capabilities:
+      apiVersions: []
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ovh s3 provider runtime config is not rendered for production cluster
+    capabilities:
+      apiVersions: []
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-production.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ovh-s3-provider container resources for sf-k8s04-dev cluster
+    capabilities:
+      apiVersions:
+        - pkg.crossplane.io/v1beta1
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+      - ../values-sf-k8s04-dev.yaml
+    asserts:
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
+          # on sf-k8s04-dev cluster we expect non 0 cpu limits
+          pattern: "^[1-9].*"
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+          # on sf-k8s04-dev cluster we expect non 0 memory limits
+          pattern: "^[1-9].*"
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.cpu
+          # on sf-k8s04-dev cluster we expect non 0 cpu requests
+          pattern: "^[1-9].*"
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.memory
+          # on sf-k8s04-dev cluster we expect non 0 memory requests
+          pattern: "^[1-9].*"
+      - matchSnapshot: {}
