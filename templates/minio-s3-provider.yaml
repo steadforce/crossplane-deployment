@@ -1,4 +1,12 @@
-{{- if and (or .Values.ovh .Values.hetzner) (.Capabilities.APIVersions.Has "pkg.crossplane.io/v1") }}
+{{- $s3ProviderCount := 0 }}
+{{- if .Values.aws.s3.enabled }}{{- $s3ProviderCount = add $s3ProviderCount 1 }}{{- end }}
+{{- if .Values.ovh }}{{- $s3ProviderCount = add $s3ProviderCount 1 }}{{- end }}
+{{- if .Values.hetzner }}{{- $s3ProviderCount = add $s3ProviderCount 1 }}{{- end }}
+{{- if .Values.ionos }}{{- $s3ProviderCount = add $s3ProviderCount 1 }}{{- end }}
+{{- if gt $s3ProviderCount 1 }}
+  {{- fail "Configure only one S3 backend: disable aws.s3.enabled when using OVH, Hetzner, or Ionos, and supply only one S3-compatible provider block." }}
+{{- end }}
+{{- if and (or .Values.ovh .Values.hetzner .Values.ionos) (.Capabilities.APIVersions.Has "pkg.crossplane.io/v1") }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:

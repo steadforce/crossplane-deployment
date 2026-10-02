@@ -1,0 +1,6 @@
+aws:
+  s3:
+    enabled: false
+ionos:
+  s3:
+    endpoint: https://s3.eu-central-3.ionoscloud.com
