@@ -17,7 +17,8 @@ tests:
 
   - it: ionos s3 provider runtime config is not rendered for development cluster without ionos values
     capabilities:
-      apiVersions: []
+      apiVersions:
+        - pkg.crossplane.io/v1beta1
     values:
       - ../values-development.yaml
     asserts:

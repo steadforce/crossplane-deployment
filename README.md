@@ -15,8 +15,7 @@ This chart wraps the upstream [`crossplane`](https://charts.crossplane.io) Helm 
 - `ExternalSecret` resources that fetch the AWS and OVH credentials referenced by the `ProviderConfig` resources.
 
 > [!NOTE]
-> The AWS S3, Hetzner and OVH provider are mutually exclusive per cluster. AWS S3 is enabled by default and
-> disabled per environment via `aws.s3.enabled: false`. OVH and Hetzner are only enabled when the respective value block is present.
+> AWS S3, OVH, Hetzner, and Ionos are mutually exclusive per cluster. The chart rejects values that select more than one backend. AWS S3 is enabled by default and disabled per environment via `aws.s3.enabled: false`. OVH, Hetzner, and Ionos are enabled when the respective value block is present.
 
 ## Repository Structure
 
