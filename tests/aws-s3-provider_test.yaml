@@ -7,9 +7,17 @@ templates:
 release:
   name: crossplane
 tests:
+- it: renders nothing on sf-k8s04-dev where aws s3 is disabled
+  values:
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
 - it: uses the upbound provider-aws-s3 package on local
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
   - matchRegex: &providerPackageAssert
@@ -18,14 +26,14 @@ tests:
   - matchSnapshot: {}
 - it: uses the upbound provider-aws-s3 package in development
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts:
   - matchRegex: *providerPackageAssert
   - matchSnapshot: {}
 - it: uses the upbound provider-aws-s3 package in production
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts:
   - matchRegex: *providerPackageAssert

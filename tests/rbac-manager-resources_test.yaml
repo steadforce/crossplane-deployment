@@ -6,7 +6,7 @@ release:
 tests:
 - it: uses zero cpu and memory requests for the rbac manager on local
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - equal: &rbacManagerLocalContainerResourcesAssert
@@ -21,10 +21,26 @@ tests:
   - equal:
       <<: *rbacManagerLocalContainerResourcesAssert
       path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.cpu
+      # on local cluster we expect 0 or 0m cpu limits
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.cpu
+      # on local cluster we expect 0 or 0m cpu requests
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
+      # on local cluster we expect 0 or 0Mi 0Gi memory requests
+      pattern: "^0.*"
   - matchSnapshot: {}
 - it: keeps the subchart rbac manager resources in development
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &rbacManagerDefaultResourcesAssert
   - equal: &rbacManagerDefaultContainerResourcesAssert
@@ -39,9 +55,25 @@ tests:
   - equal:
       <<: *rbacManagerDefaultContainerResourcesAssert
       path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.cpu
+      # outside local we expect non 0 cpu limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.memory
+      # outside local we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.cpu
+      # outside local we expect non 0 cpu requests
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
+      # outside local we expect non 0 memory requests
+      pattern: "^[1-9].*"
   - matchSnapshot: {}
 - it: keeps the subchart rbac manager resources in production
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *rbacManagerDefaultResourcesAssert

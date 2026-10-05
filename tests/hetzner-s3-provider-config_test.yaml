@@ -1,0 +1,80 @@
+suite: hetzner-s3 minio ProviderConfig per cluster
+templates:
+  - templates/hetzner-s3-provider-config.yaml
+release:
+  name: crossplane
+tests:
+  - it: renders nothing on local without hetzner values
+    capabilities: &noApiVersionsCapabilities
+      apiVersions: []
+    values:
+      - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+      - ../values-local.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders nothing in development without hetzner values
+    capabilities: *noApiVersionsCapabilities
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders nothing in production without hetzner values
+    capabilities: *noApiVersionsCapabilities
+    values:
+      - *subchartOverrideValuesFile
+      - ../values-production.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders the hetzner-s3 minio ProviderConfig on sf-k8s03-dev
+    capabilities: &minioProviderCapabilities
+      apiVersions:
+        - minio.crossplane.io/v1
+    values: &sfK8s03DevValues
+      - *subchartOverrideValuesFile
+      - ../values-development.yaml
+      - ../values-sf-k8s03-dev.yaml
+    asserts:
+      - equal:
+          path: apiVersion
+          value: minio.crossplane.io/v1
+      - equal:
+          path: kind
+          value: ProviderConfig
+      - equal:
+          path: metadata.name
+          value: hetzner-s3
+      - matchSnapshot: {}
+
+  - it: reads credentials from a Secret
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s03DevValues
+    asserts:
+      - equal:
+          path: spec.credentials.source
+          value: Secret
+
+  - it: references the hetzner secret in crossplane-system
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s03DevValues
+    asserts:
+      - equal:
+          path: spec.credentials.apiSecretRef.name
+          value: hetzner
+      - equal:
+          path: spec.credentials.apiSecretRef.namespace
+          value: crossplane-system
+
+  - it: points at the hetzner fsn1 object storage endpoint
+    capabilities: *minioProviderCapabilities
+    values: *sfK8s03DevValues
+    asserts:
+      - equal:
+          path: spec.minioURL
+          value: https://fsn1.your-objectstorage.com

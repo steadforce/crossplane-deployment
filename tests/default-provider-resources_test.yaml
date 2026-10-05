@@ -9,7 +9,7 @@ release:
 tests:
 - it: uses zero cpu and memory requests and a zero cpu limit for default-provider on local
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -32,7 +32,7 @@ tests:
 
 - it: sets non-zero cpu and memory requests and limits for default-provider in development
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &defaultProviderResourcesAssert
   - matchRegex:
@@ -55,13 +55,13 @@ tests:
 
 - it: sets non-zero cpu and memory requests and limits for default-provider in production
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *defaultProviderResourcesAssert
 
 - it: sets the raised default-provider memory limit in development
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &defaultProviderMemoryLimitAssert
   - equal:
@@ -70,6 +70,6 @@ tests:
 
 - it: sets the raised default-provider memory limit in production
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *defaultProviderMemoryLimitAssert

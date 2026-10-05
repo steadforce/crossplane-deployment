@@ -7,9 +7,17 @@ templates:
 release:
   name: crossplane
 tests:
+- it: renders nothing on sf-k8s04-dev where aws s3 is disabled
+  values:
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
 - it: uses zero cpu and memory requests and a zero cpu limit for aws-s3-provider on local
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -32,7 +40,7 @@ tests:
 
 - it: sets non-zero cpu and memory requests and limits for aws-s3-provider in development
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &awsS3ProviderResourcesAssert
   - matchRegex:
@@ -55,13 +63,13 @@ tests:
 
 - it: sets non-zero cpu and memory requests and limits for aws-s3-provider in production
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *awsS3ProviderResourcesAssert
 
 - it: sets the raised aws-s3-provider memory limit in development
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &awsS3ProviderMemoryLimitAssert
   - equal:
@@ -70,6 +78,6 @@ tests:
 
 - it: sets the raised aws-s3-provider memory limit in production
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *awsS3ProviderMemoryLimitAssert
