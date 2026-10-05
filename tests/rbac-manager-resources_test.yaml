@@ -9,7 +9,7 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
-  - equal: &rbacManagerLocalResourcesAssert
+  - equal: &rbacManagerLocalContainerResourcesAssert
       path: spec.template.spec.containers[?(@.name == "crossplane")].resources
       value:
         limits:
@@ -19,15 +19,15 @@ tests:
           cpu: 0m
           memory: 0Mi
   - equal:
-      <<: *rbacManagerLocalResourcesAssert
+      <<: *rbacManagerLocalContainerResourcesAssert
       path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
   - matchSnapshot: {}
 - it: keeps the subchart rbac manager resources in development
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
-  asserts: &rbacManagerDefaultResourcesAsserts
-  - equal: &rbacManagerDefaultResourcesAssert
+  asserts: &rbacManagerDefaultResourcesAssert
+  - equal: &rbacManagerDefaultContainerResourcesAssert
       path: spec.template.spec.containers[?(@.name == "crossplane")].resources
       value:
         limits:
@@ -37,11 +37,11 @@ tests:
           cpu: 100m
           memory: 256Mi
   - equal:
-      <<: *rbacManagerDefaultResourcesAssert
+      <<: *rbacManagerDefaultContainerResourcesAssert
       path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
   - matchSnapshot: {}
 - it: keeps the subchart rbac manager resources in production
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
-  asserts: *rbacManagerDefaultResourcesAsserts
+  asserts: *rbacManagerDefaultResourcesAssert

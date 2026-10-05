@@ -12,7 +12,7 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
-  - matchRegex: &packageRegex
+  - matchRegex: &providerPackageAssert
       path: spec.package
       pattern: "^xpkg.upbound.io/upbound/provider-aws-s3:"
   - matchSnapshot: {}
@@ -21,12 +21,12 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
   asserts:
-  - matchRegex: *packageRegex
+  - matchRegex: *providerPackageAssert
   - matchSnapshot: {}
 - it: uses the upbound provider-aws-s3 package in production
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
   asserts:
-  - matchRegex: *packageRegex
+  - matchRegex: *providerPackageAssert
   - matchSnapshot: {}

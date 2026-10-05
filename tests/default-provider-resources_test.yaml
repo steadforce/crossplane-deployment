@@ -34,7 +34,7 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
-  asserts: &defaultProviderResourcesAsserts
+  asserts: &defaultProviderResourcesAssert
   - matchRegex:
       path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
       # on local cluster we expect non 0 cpu limits
@@ -57,13 +57,13 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
-  asserts: *defaultProviderResourcesAsserts
+  asserts: *defaultProviderResourcesAssert
 
 - it: sets the raised default-provider memory limit in development
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
-  asserts: &defaultMemoryLimitAsserts
+  asserts: &defaultProviderMemoryLimitAssert
   - equal:
       path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
       value: 512Mi
@@ -72,4 +72,4 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
-  asserts: *defaultMemoryLimitAsserts
+  asserts: *defaultProviderMemoryLimitAssert

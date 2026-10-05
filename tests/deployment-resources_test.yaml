@@ -31,7 +31,7 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
-  asserts: &crossplaneResourcesAsserts
+  asserts: &crossplaneResourcesAssert
   - matchRegex:
       path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.cpu
       # on local cluster we expect non 0 cpu limits
@@ -54,7 +54,7 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
-  asserts: *crossplaneResourcesAsserts
+  asserts: *crossplaneResourcesAssert
 
 - it: uses the local crossplane resources for the init container
   values:
@@ -75,7 +75,7 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
-  asserts: &crossplaneMemoryRequestAsserts
+  asserts: &crossplaneMemoryRequestAssert
   - equal:
       path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
       value: 320Mi
@@ -87,4 +87,4 @@ tests:
   values:
   - ../values-subchart-overrides.yaml
   - ../values-production.yaml
-  asserts: *crossplaneMemoryRequestAsserts
+  asserts: *crossplaneMemoryRequestAssert

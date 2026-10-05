@@ -12,7 +12,7 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
-  - contains: &devRoleARN
+  - contains: &developmentS3AccessRoleAssert
       path: spec.assumeRoleChain
       content:
         roleARN: arn:aws:iam::737742117295:role/assume_s3_access
@@ -22,7 +22,7 @@ tests:
   - ../values-subchart-overrides.yaml
   - ../values-development.yaml
   asserts:
-  - contains: *devRoleARN
+  - contains: *developmentS3AccessRoleAssert
   - matchSnapshot: {}
 - it: assumes the production s3 access role in production
   values:
