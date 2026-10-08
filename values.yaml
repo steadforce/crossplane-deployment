@@ -13,7 +13,7 @@ providers:
     image:
       registry: xpkg.upbound.io
       repository: upbound/provider-aws-s3
-      tag: v2.7.0
+      tag: v2.9.0
     resources:
       limits:
         cpu: 1000m
