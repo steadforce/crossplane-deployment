@@ -1,10 +1,10 @@
-suite: test if the resource settings for hetzner-s3-provider container in cluster is correct
+suite: minio provider DeploymentRuntimeConfig resources for hetzner
 templates:
   - templates/minio-s3-provider-runtime-config.yaml
 release:
   name: crossplane
 tests:
-  - it: hetzner s3 provider runtime config is not rendered for local cluster
+  - it: renders nothing on local without hetzner values
     capabilities:
       apiVersions: []
     values:
@@ -14,7 +14,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider runtime config is not rendered for development cluster without hetzner values
+  - it: renders nothing in development without hetzner values
     capabilities:
       apiVersions: []
     values:
@@ -24,7 +24,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider runtime config is not rendered for production cluster
+  - it: renders nothing in production without hetzner values
     capabilities:
       apiVersions: []
     values:
@@ -34,7 +34,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner-s3-provider container resources for sf-k8s03-dev cluster
+  - it: sets non-zero cpu and memory requests and limits for the minio provider on sf-k8s03-dev
     capabilities:
       apiVersions:
         - pkg.crossplane.io/v1beta1

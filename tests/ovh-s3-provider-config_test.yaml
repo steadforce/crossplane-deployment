@@ -1,10 +1,10 @@
-suite: test if values for ovh s3 provider config are correct
+suite: ovh-s3 minio ProviderConfig per cluster
 templates:
   - templates/ovh-s3-provider-config.yaml
 release:
   name: crossplane
 tests:
-  - it: ovh s3 provider config is not rendered for local cluster
+  - it: renders nothing on local without ovh values
     capabilities: &noApiVersionsCapabilities
       apiVersions: []
     values:
@@ -14,7 +14,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider config is not rendered for development cluster without ovh values
+  - it: renders nothing in development without ovh values
     capabilities: *noApiVersionsCapabilities
     values:
       - *subchartOverrideValuesFile
@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider config is not rendered for production cluster
+  - it: renders nothing in production without ovh values
     capabilities: *noApiVersionsCapabilities
     values:
       - *subchartOverrideValuesFile
@@ -32,7 +32,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: ovh s3 provider config for sf-k8s04-dev cluster
+  - it: renders the ovh-s3 minio ProviderConfig on sf-k8s04-dev
     capabilities: &minioProviderCapabilities
       apiVersions:
         - minio.crossplane.io/v1
@@ -52,7 +52,7 @@ tests:
           value: ovh-s3
       - matchSnapshot: {}
 
-  - it: ovh s3 provider config uses Secret credentials
+  - it: reads credentials from a Secret
     capabilities: *minioProviderCapabilities
     values: *sfK8s04DevValues
     asserts:
@@ -60,7 +60,7 @@ tests:
           path: spec.credentials.source
           value: Secret
 
-  - it: ovh s3 provider config references the ovh API secret
+  - it: references the ovh secret in crossplane-system
     capabilities: *minioProviderCapabilities
     values: *sfK8s04DevValues
     asserts:
@@ -71,7 +71,7 @@ tests:
           path: spec.credentials.apiSecretRef.namespace
           value: crossplane-system
 
-  - it: ovh s3 provider config uses the correct endpoint
+  - it: points at the ovh de object storage endpoint
     capabilities: *minioProviderCapabilities
     values: *sfK8s04DevValues
     asserts:

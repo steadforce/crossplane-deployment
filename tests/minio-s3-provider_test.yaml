@@ -1,4 +1,4 @@
-suite: test if values for minio s3 provider are correct
+suite: minio Provider package per cluster
 capabilities:
   apiVersions:
     - pkg.crossplane.io/v1
@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-  - it: minio s3 provider is not rendered for local cluster
+  - it: renders nothing on local without ovh or hetzner values
     values:
       - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
       - ../values-local.yaml
@@ -15,7 +15,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: minio s3 provider is not rendered for development cluster without ovh or hetzner values
+  - it: renders nothing in development without ovh or hetzner values
     values:
       - *subchartOverrideValuesFile
       - ../values-development.yaml
@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: minio s3 provider is not rendered for production cluster
+  - it: renders nothing in production without ovh or hetzner values
     values:
       - *subchartOverrideValuesFile
       - ../values-production.yaml
@@ -31,12 +31,12 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: minio s3 provider is rendered for sf-k8s04-dev cluster with ovh
+  - it: installs the vshn provider-minio package on sf-k8s04-dev for ovh
     values:
       - *subchartOverrideValuesFile
       - ../values-development.yaml
       - ../values-sf-k8s04-dev.yaml
-    asserts:
+    asserts: &minioProviderAssert
       - equal:
           path: apiVersion
           value: pkg.crossplane.io/v1
@@ -54,25 +54,9 @@ tests:
           value: minio-provider
       - matchSnapshot: {}
 
-  - it: minio s3 provider is rendered for sf-k8s03-dev cluster with hetzner
+  - it: installs the vshn provider-minio package on sf-k8s03-dev for hetzner
     values:
       - *subchartOverrideValuesFile
       - ../values-development.yaml
       - ../values-sf-k8s03-dev.yaml
-    asserts:
-      - equal:
-          path: apiVersion
-          value: pkg.crossplane.io/v1
-      - equal:
-          path: kind
-          value: Provider
-      - equal:
-          path: metadata.name
-          value: provider-minio
-      - equal:
-          path: spec.package
-          value: xpkg.upbound.io/vshn/provider-minio:v0.4.5
-      - equal:
-          path: spec.runtimeConfigRef.name
-          value: minio-provider
-      - matchSnapshot: {}
+    asserts: *minioProviderAssert

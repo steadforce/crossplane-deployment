@@ -1,0 +1,90 @@
+suite: crossplane deployment resources per stage
+templates:
+- charts/crossplane/templates/deployment.yaml
+release:
+  name: crossplane
+tests:
+- it: uses zero cpu and memory requests and a zero cpu limit for crossplane on local
+  values:
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.cpu
+      # on local cluster we expect 0 or 0m cpu limits
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.cpu
+      # on local cluster we expect 0 or 0m cpu requests
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
+      # on local cluster we expect 0 or 0Mi 0Gi memory requests
+      pattern: "^0.*"
+  - matchSnapshot: {}
+
+- it: sets non-zero cpu and memory requests and limits for crossplane in development
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-development.yaml
+  asserts: &crossplaneResourcesAssert
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.cpu
+      # on local cluster we expect non 0 cpu limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.cpu
+      # on local cluster we expect non 0 cpu requests
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
+      # on local cluster we expect non 0 memory requests
+      pattern: "^[1-9].*"
+  - matchSnapshot: {}
+
+- it: sets non-zero cpu and memory requests and limits for crossplane in production
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-production.yaml
+  asserts: *crossplaneResourcesAssert
+
+- it: uses the local crossplane resources for the init container
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-local.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources
+      value:
+        limits:
+          cpu: 0m
+          memory: 1024Mi
+        requests:
+          cpu: 0m
+          memory: 0Mi
+
+- it: sets the raised crossplane memory request in development
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-development.yaml
+  asserts: &crossplaneMemoryRequestAssert
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "crossplane")].resources.requests.memory
+      value: 320Mi
+  - equal:
+      path: spec.template.spec.initContainers[?(@.name == "crossplane-init")].resources.requests.memory
+      value: 320Mi
+
+- it: sets the raised crossplane memory request in production
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-production.yaml
+  asserts: *crossplaneMemoryRequestAssert

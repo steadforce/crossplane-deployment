@@ -1,10 +1,10 @@
-suite: test if values for hetzner s3 provider config are correct
+suite: hetzner-s3 minio ProviderConfig per cluster
 templates:
   - templates/hetzner-s3-provider-config.yaml
 release:
   name: crossplane
 tests:
-  - it: hetzner s3 provider config is not rendered for local cluster
+  - it: renders nothing on local without hetzner values
     capabilities: &noApiVersionsCapabilities
       apiVersions: []
     values:
@@ -14,7 +14,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider config is not rendered for development cluster without hetzner values
+  - it: renders nothing in development without hetzner values
     capabilities: *noApiVersionsCapabilities
     values:
       - *subchartOverrideValuesFile
@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider config is not rendered for production cluster
+  - it: renders nothing in production without hetzner values
     capabilities: *noApiVersionsCapabilities
     values:
       - *subchartOverrideValuesFile
@@ -32,7 +32,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: hetzner s3 provider config for sf-k8s03-dev cluster
+  - it: renders the hetzner-s3 minio ProviderConfig on sf-k8s03-dev
     capabilities: &minioProviderCapabilities
       apiVersions:
         - minio.crossplane.io/v1
@@ -52,7 +52,7 @@ tests:
           value: hetzner-s3
       - matchSnapshot: {}
 
-  - it: hetzner s3 provider config uses Secret credentials
+  - it: reads credentials from a Secret
     capabilities: *minioProviderCapabilities
     values: *sfK8s03DevValues
     asserts:
@@ -60,7 +60,7 @@ tests:
           path: spec.credentials.source
           value: Secret
 
-  - it: hetzner s3 provider config references the hetzner API secret
+  - it: references the hetzner secret in crossplane-system
     capabilities: *minioProviderCapabilities
     values: *sfK8s03DevValues
     asserts:
@@ -71,7 +71,7 @@ tests:
           path: spec.credentials.apiSecretRef.namespace
           value: crossplane-system
 
-  - it: hetzner s3 provider config uses the correct endpoint
+  - it: points at the hetzner fsn1 object storage endpoint
     capabilities: *minioProviderCapabilities
     values: *sfK8s03DevValues
     asserts:
