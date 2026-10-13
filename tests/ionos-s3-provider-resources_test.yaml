@@ -1,0 +1,58 @@
+suite: test if the resource settings for ionos-s3-provider container in cluster is correct
+templates:
+  - templates/minio-s3-provider-runtime-config.yaml
+release:
+  name: crossplane
+values:
+  - ../values-subchart-overrides.yaml
+tests:
+  - it: ionos s3 provider runtime config is not rendered for local cluster
+    capabilities:
+      apiVersions: []
+    values:
+      - ../values-local.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ionos s3 provider runtime config is not rendered for development cluster without ionos values
+    capabilities:
+      apiVersions:
+        - pkg.crossplane.io/v1beta1
+    values:
+      - ../values-development.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ionos s3 provider runtime config is not rendered for production cluster
+    capabilities:
+      apiVersions: []
+    values:
+      - ../values-production.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ionos-s3-provider container resources for sf-k8s05-dev cluster
+    capabilities:
+      apiVersions:
+        - pkg.crossplane.io/v1beta1
+    values:
+      - ../values-development.yaml
+      - ../values-sf-k8s05-dev.yaml
+    asserts:
+      # on sf-k8s05-dev cluster we expect non 0 cpu, memory limits & requests
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
+          pattern: "^[1-9].*"
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+          pattern: "^[1-9].*"
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.cpu
+          pattern: "^[1-9].*"
+      - matchRegex:
+          path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.requests.memory
+          pattern: "^[1-9].*"
+      - matchSnapshot: {}
