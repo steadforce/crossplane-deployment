@@ -1,4 +1,4 @@
-suite: test if values for aws family provider are correct
+suite: aws family Provider package
 capabilities:
   apiVersions:
   - pkg.crossplane.io/v1
@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: aws family provider is not rendered for sf-k8s04-dev cluster
+- it: renders nothing on sf-k8s04-dev where aws s3 is disabled
   values:
   - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-development.yaml
@@ -15,7 +15,7 @@ tests:
   asserts:
   - hasDocuments:
       count: 0
-- it: aws family provider uses the same version as the aws s3 provider
+- it: uses the upbound provider-family-aws package
   values:
   - *subchartOverrideValuesFile
   - ../values-local.yaml
@@ -24,7 +24,7 @@ tests:
       path: spec.package
       pattern: "^xpkg.upbound.io/upbound/provider-family-aws:"
   - matchSnapshot: {}
-- it: aws family provider adopts the name of the auto-installed dependency
+- it: adopts the name of the auto-installed family provider dependency
   values:
   - *subchartOverrideValuesFile
   - ../values-local.yaml

@@ -1,4 +1,4 @@
-suite: test if the resource settings for default-provider container in cluster is correct
+suite: default-provider DeploymentRuntimeConfig resources per stage
 capabilities:
   apiVersions:
   - pkg.crossplane.io/v1beta1
@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: default-provider container resources for local cluster
+- it: uses zero cpu and memory requests and a zero cpu limit for default-provider on local
   values:
   - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -30,11 +30,11 @@ tests:
       pattern: "^0.*"
   - matchSnapshot: {}
 
-- it: default-provider container resources for dev-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for default-provider in development
   values:
   - *subchartOverrideValuesFile
   - ../values-development.yaml
-  asserts: &defaultProviderResourcesAsserts
+  asserts: &defaultProviderResourcesAssert
   - matchRegex:
       path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
       # on local cluster we expect non 0 cpu limits
@@ -53,8 +53,23 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: default-provider container resources for prod-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for default-provider in production
   values:
   - *subchartOverrideValuesFile
   - ../values-production.yaml
-  asserts: *defaultProviderResourcesAsserts
+  asserts: *defaultProviderResourcesAssert
+
+- it: sets the raised default-provider memory limit in development
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-development.yaml
+  asserts: &defaultProviderMemoryLimitAssert
+  - equal:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+      value: 512Mi
+
+- it: sets the raised default-provider memory limit in production
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-production.yaml
+  asserts: *defaultProviderMemoryLimitAssert

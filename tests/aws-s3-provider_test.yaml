@@ -1,4 +1,4 @@
-suite: test if values for aws s3 provider are correct
+suite: aws-s3 Provider package per stage
 capabilities:
   apiVersions:
   - pkg.crossplane.io/v1
@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: aws s3 provider is not rendered for sf-k8s04-dev cluster
+- it: renders nothing on sf-k8s04-dev where aws s3 is disabled
   values:
   - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-development.yaml
@@ -15,26 +15,26 @@ tests:
   asserts:
   - hasDocuments:
       count: 0
-- it: aws-s3-provider container image for local cluster
+- it: uses the upbound provider-aws-s3 package on local
   values:
   - *subchartOverrideValuesFile
   - ../values-local.yaml
   asserts:
-  - matchRegex: &packageRegex
+  - matchRegex: &providerPackageAssert
       path: spec.package
       pattern: "^xpkg.upbound.io/upbound/provider-aws-s3:"
   - matchSnapshot: {}
-- it: aws-s3-provider container image for development cluster
+- it: uses the upbound provider-aws-s3 package in development
   values:
   - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts:
-  - matchRegex: *packageRegex
+  - matchRegex: *providerPackageAssert
   - matchSnapshot: {}
-- it: aws-s3-provider container image for production cluster
+- it: uses the upbound provider-aws-s3 package in production
   values:
   - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts:
-  - matchRegex: *packageRegex
+  - matchRegex: *providerPackageAssert
   - matchSnapshot: {}

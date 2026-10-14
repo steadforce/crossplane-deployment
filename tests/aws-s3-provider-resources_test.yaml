@@ -1,4 +1,4 @@
-suite: test if the resource settings for aws-s3-provider container in cluster is correct
+suite: aws-s3-provider DeploymentRuntimeConfig resources per stage
 capabilities:
   apiVersions:
   - pkg.crossplane.io/v1beta1
@@ -7,7 +7,7 @@ templates:
 release:
   name: crossplane
 tests:
-- it: aws s3 provider runtime config is not rendered for sf-k8s04-dev cluster
+- it: renders nothing on sf-k8s04-dev where aws s3 is disabled
   values:
   - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-development.yaml
@@ -15,7 +15,7 @@ tests:
   asserts:
   - hasDocuments:
       count: 0
-- it: aws-s3-provider container resources for local cluster
+- it: uses zero cpu and memory requests and a zero cpu limit for aws-s3-provider on local
   values:
   - *subchartOverrideValuesFile
   - ../values-local.yaml
@@ -38,11 +38,11 @@ tests:
       pattern: "^0.*"
   - matchSnapshot: {}
 
-- it: aws-s3-provider container resources for dev-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for aws-s3-provider in development
   values:
   - *subchartOverrideValuesFile
   - ../values-development.yaml
-  asserts: &awsS3ProviderResourcesAsserts
+  asserts: &awsS3ProviderResourcesAssert
   - matchRegex:
       path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.cpu
       # on local cluster we expect non 0 cpu limits
@@ -61,8 +61,23 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: aws-s3-provider container resources for prod-cloud01 cluster
+- it: sets non-zero cpu and memory requests and limits for aws-s3-provider in production
   values:
   - *subchartOverrideValuesFile
   - ../values-production.yaml
-  asserts: *awsS3ProviderResourcesAsserts
+  asserts: *awsS3ProviderResourcesAssert
+
+- it: sets the raised aws-s3-provider memory limit in development
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-development.yaml
+  asserts: &awsS3ProviderMemoryLimitAssert
+  - equal:
+      path: spec.deploymentTemplate.spec.template.spec.containers[?(@.name == "package-runtime")].resources.limits.memory
+      value: 512Mi
+
+- it: sets the raised aws-s3-provider memory limit in production
+  values:
+  - *subchartOverrideValuesFile
+  - ../values-production.yaml
+  asserts: *awsS3ProviderMemoryLimitAssert
