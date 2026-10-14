@@ -2,7 +2,7 @@
 
 Helm umbrella chart that deploys and configures [Crossplane](https://www.crossplane.io) through Argo CD, together
 with the `Provider`, `ProviderConfig`, and `DeploymentRuntimeConfig` resources needed to manage AWS S3 buckets and
-S3-compatible Hetzner and OVH buckets (via `vshn/provider-minio`).
+S3-compatible Hetzner, OVH, and Ionos buckets (via `vshn/provider-minio`).
 
 ## Overview
 
@@ -17,21 +17,24 @@ The chart depends on the upstream [`crossplane`](https://charts.crossplane.io/st
 | `aws-s3-provider-runtime-config.yaml` | `DeploymentRuntimeConfig` with the S3 provider's resources |
 | `aws-s3-provider-config.yaml` | `ProviderConfig` `aws-s3` that assumes the stage's IAM role |
 | `aws-external-secret.yaml` | `ExternalSecret` `aws` with the AWS credentials of the stage |
-| `minio-s3-provider.yaml` | `Provider` for `vshn/provider-minio`, used for Hetzner and OVH |
+| `minio-s3-provider.yaml` | `Provider` for `vshn/provider-minio`, used for Hetzner, OVH, and Ionos |
 | `minio-s3-provider-runtime-config.yaml` | `DeploymentRuntimeConfig` with the minio provider's resources |
 | `hetzner-s3-provider-config.yaml` | `ProviderConfig` `hetzner-s3` for the Hetzner S3 endpoint |
 | `hetzner-external-secret.yaml` | `ExternalSecret` `hetzner` with the Hetzner S3 credentials |
 | `ovh-s3-provider-config.yaml` | `ProviderConfig` `ovh-s3` for the OVH S3 endpoint |
 | `ovh-external-secret.yaml` | `ExternalSecret` `ovh` with the OVH S3 credentials |
+| `ionos-s3-provider-config.yaml` | `ProviderConfig` `ionos-s3` for the Ionos S3 endpoint |
+| `ionos-external-secret.yaml` | `ExternalSecret` `ionos` with the Ionos S3 credentials |
 | `default-provider-runtime-config.yaml` | `default` `DeploymentRuntimeConfig` with default provider resources |
 
 The family provider is a dependency of `provider-aws-s3` that Crossplane installs automatically but never upgrades.
 The chart adopts it under the name Crossplane gives it, so both providers stay on the same version.
 
 > [!NOTE]
-> Each cluster uses only one of the AWS S3, Hetzner, and OVH providers; the chart does not enforce this. AWS S3 is
-> enabled by default and disabled per cluster with `aws.s3.enabled: false`. Hetzner and OVH are only enabled when
-> the `hetzner` or `ovh` value block is present, and both share the minio provider.
+> Each cluster uses only one of the AWS S3, Hetzner, OVH, and Ionos backends. The chart fails to render when more
+> than one is selected. AWS S3 is enabled by default and disabled per cluster with `aws.s3.enabled: false`. Hetzner,
+> OVH, and Ionos are only enabled when the `hetzner`, `ovh`, or `ionos` value block is present, and all three share
+> the minio provider.
 
 All templates except the namespace are guarded by `.Capabilities.APIVersions.Has`. They are rendered only when the
 cluster (or `helm template -a`) reports the API version of the custom resource. This prevents Argo CD sync errors
@@ -54,6 +57,7 @@ We use [External Secrets](https://external-secrets.io) to manage the secrets nee
 | `aws` | `/<stage>/crossplane/aws` | whole value as `creds` |
 | `hetzner` | `/<stage>/crossplane/hetzner` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
 | `ovh` | `/<stage>/crossplane/ovh-minio` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
+| `ionos` | `/<stage>/crossplane/ionos` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
 
 For how to provide these secrets, see the
 [external-secrets-deployment](https://github.com/steadforce/external-secrets-deployment) README.
@@ -79,13 +83,14 @@ All commands run from the repository root.
 | `values-local.yaml` | Local cluster: CPU limits and requests set to `0m`, memory requests to `0Mi` |
 | `values-sf-k8s03-dev.yaml` | `sf-k8s03-dev` cluster: disables AWS S3, sets the Hetzner S3 endpoint |
 | `values-sf-k8s04-dev.yaml` | `sf-k8s04-dev` cluster: disables AWS S3, sets the OVH S3 endpoint |
+| `values-sf-k8s05-dev.yaml` | `sf-k8s05-dev` cluster: disables AWS S3, sets the Ionos S3 endpoint |
 | `values-subchart-overrides.yaml` | Overrides for subchart values (see [Testing](#testing)) |
 | `tests/` | helm-unittest suites; snapshots in `tests/__snapshot__/` are gitignored |
 | `renovate.json` | Renovate configuration |
 | `.github/workflows/` | CI workflows |
 
-The unit tests apply the cluster files `values-sf-k8s03-dev.yaml` and `values-sf-k8s04-dev.yaml` on top of
-`values-development.yaml`.
+The unit tests apply the cluster files `values-sf-k8s03-dev.yaml`, `values-sf-k8s04-dev.yaml`, and
+`values-sf-k8s05-dev.yaml` on top of `values-development.yaml`.
 
 ## Setup
 
@@ -164,8 +169,8 @@ With Docker:
 ```
 
 For the other stages, replace `values-local.yaml` with `values-development.yaml` or `values-production.yaml` and
-adjust the output directory. For the `sf-k8s03-dev` or `sf-k8s04-dev` cluster, pass its cluster file after
-`-f values-development.yaml`.
+adjust the output directory. For the `sf-k8s03-dev`, `sf-k8s04-dev`, or `sf-k8s05-dev` cluster, pass its cluster
+file after `-f values-development.yaml`.
 
 ## Testing
 
@@ -261,3 +266,13 @@ archive in `charts/`:
 ```
 
 Helm replaces the old archive in `charts/`. Commit the new `Chart.lock` and archive together with `Chart.yaml`.
+
+## S3 Buckets
+
+Buckets created through other repositories must use the region of the cluster's S3 provider:
+
+| Cluster | Provider | Region |
+| --- | --- | --- |
+| `sf-k8s03-dev` | Hetzner | `fsn1` |
+| `sf-k8s04-dev` | OVH | `de` |
+| `sf-k8s05-dev` | Ionos | `eu-central-3` |
